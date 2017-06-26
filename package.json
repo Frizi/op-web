@@ -1,0 +1,13 @@
+{
+  "name": "op-web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Frizi <frizi09@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "vue build --config config.js"
+  },
+  "dependencies": {
+    "ramda": "^0.24.1"
+  }
+}
