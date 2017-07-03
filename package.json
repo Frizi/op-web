@@ -8,6 +8,8 @@
     "start": "vue build --config config.js"
   },
   "dependencies": {
-    "ramda": "^0.24.1"
+    "invariant": "^2.2.2",
+    "ramda": "^0.24.1",
+    "webmidi": "^2.0.0-rc.5"
   }
 }
