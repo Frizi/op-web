@@ -5,3 +5,7 @@
 ramda@^0.24.1:
   version "0.24.1"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.24.1.tgz#c3b7755197f35b8dc3502228262c4c91ddb6b857"
+
+vue@^2.3.4:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.3.4.tgz#5ec3b87a191da8090bbef56b7cfabd4158038171"
