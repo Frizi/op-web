@@ -1,12 +1,12 @@
 <template lang="html">
-    <div>
-        <!-- <select v-model="oscType">
-            <option value="sine">sine</option>
-            <option value="square">square</option>
-            <option value="sawtooth">sawtooth</option>
-            <option value="triangle">triangle</option>
-        </select> -->
-        <pre>{{ notesDesc }}</pre>
+    <div class="pianoroll">
+        <div class="note" :style="{
+                bottom: `${(note % 64) * 11}px`,
+                [note > 64 ? 'right':'left']: '0px'
+            }"
+            v-for="note in playingNotes">
+            {{ noteName(note) }}
+        </div>
     </div>
 </template>
 
@@ -41,6 +41,7 @@ export default {
         this.setupMidi()
     },
     methods: {
+        noteName,
         setupMidi() {
             webmidi.enable(() => {
                 const instantInput = webmidi.getInputByName('Launchpad')
@@ -151,15 +152,38 @@ export default {
                 R.filter(R.both(R.lte(0), R.gte(127)))
             )([...keyboardNotes, ...midiNotes])
         },
-        notesDesc () {
-            return this.playingNotes.map(n => `${noteName(n)}: ${noteFrequency(n)}`).join('\n')
-        }
+        // notesDesc () {
+        //     return this.playingNotes.map(n => `${noteName(n)}: ${noteFrequency(n)}`).join('\n')
+        // }
     }
 }
 
 const diff = (a, b) => a - b
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
+
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 9px;
+    font-family: Arial, sans-serif;
+}
+
+.pianoroll {
+    position: relative;
+    height: 100%;
+}
+
+.note {
+    box-sizing: border-box;
+    position: absolute;
+    color: #aaa;
+    padding: 0 5px;
+    width: 50%;
+    height: 10px;
+    background-color: #333;
+}
 
 </style>
