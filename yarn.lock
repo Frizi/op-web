@@ -22,6 +22,14 @@ ramda@^0.24.1:
   version "0.24.1"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.24.1.tgz#c3b7755197f35b8dc3502228262c4c91ddb6b857"
 
+tone@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/tone/-/tone-0.10.0.tgz#c8558a29459e2124222a27ebf17bbdbeeb36e7d6"
+
+vuex@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/vuex/-/vuex-2.3.1.tgz#cde8e997c1f9957719bc7dea154f9aa691d981a6"
+
 webmidi@^2.0.0-rc.5:
   version "2.0.0-rc.5"
   resolved "https://registry.yarnpkg.com/webmidi/-/webmidi-2.0.0-rc.5.tgz#881ea9fdd34c616222af144e3b9c9d0cdaf11e1c"

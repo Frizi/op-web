@@ -10,6 +10,8 @@
   "dependencies": {
     "invariant": "^2.2.2",
     "ramda": "^0.24.1",
+    "tone": "^0.10.0",
+    "vuex": "^2.3.1",
     "webmidi": "^2.0.0-rc.5"
   }
 }

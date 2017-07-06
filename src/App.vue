@@ -1,7 +1,7 @@
 <template lang="html">
     <div class="pianoroll">
         <div class="note" :style="{
-                bottom: `${(note % 64) * 11}px`,
+                bottom: `${(note % 64) * 12}px`,
                 [note > 64 ? 'right':'left']: '0px'
             }"
             v-for="note in playingNotes">
@@ -38,48 +38,9 @@ export default {
         this._synths = {}
         this.midiInput = null
         this.midiOutput = null
-        this.setupMidi()
     },
     methods: {
         noteName,
-        setupMidi() {
-            webmidi.enable(() => {
-                const instantInput = webmidi.getInputByName('Launchpad')
-                const instantOutput = webmidi.getOutputByName('Launchpad')
-                instantInput && this.connectMidiInput(instantInput)
-                instantOutput && this.connectMidiOutput(instantOutput)
-
-                webmidi.addListener('connected', (e) => {
-                    if (e.name.indexOf('Launchpad') >= 0) {
-                        if (e.input) {
-                            this.connectMidiInput(e.input)
-                        }
-                        if (e.output) {
-                            this.connectMidiOutput(e.output)
-                        }
-                    }
-                })
-            })
-        },
-        connectMidiInput (input) {
-            console.log('connectMidiInput')
-            if (this.midiInput === input) return
-            this.midiInput = input
-            this.midiInput.addListener('noteon', "all", (e) => {
-                this.$set(this.extMidiState, e.note.number, true)
-            })
-            this.midiInput.addListener('noteoff', "all", (e) => {
-                this.$set(this.extMidiState, e.note.number, false)
-            })
-        },
-        connectMidiOutput (output) {
-            if (this.midiOutput === output) return
-
-            console.log('connectMidiOutput')
-            this.midiOutput = output
-            this.midiOutput.sendControlChange(0, 0)
-            this.midiOutput.sendControlChange(0, 2)
-        },
         createOsc (note) {
             if (isUndef(this._synths[note])) {
                 const synth = new SynthNote(this._audioCtx, note)
@@ -113,7 +74,7 @@ export default {
             const key = event.key.toLowerCase()
             switch (key) {
                 case 'z':
-                case 'x':
+                case 'x':a
                     break
                 default:
                     this.$set(this.keyboardState, key, false)
@@ -151,10 +112,7 @@ export default {
                 R.sort(diff),
                 R.filter(R.both(R.lte(0), R.gte(127)))
             )([...keyboardNotes, ...midiNotes])
-        },
-        // notesDesc () {
-        //     return this.playingNotes.map(n => `${noteName(n)}: ${noteFrequency(n)}`).join('\n')
-        // }
+        }
     }
 }
 
@@ -180,7 +138,7 @@ html, body {
     box-sizing: border-box;
     position: absolute;
     color: #aaa;
-    padding: 0 5px;
+    /*left: 0;*/
     width: 50%;
     height: 10px;
     background-color: #333;
