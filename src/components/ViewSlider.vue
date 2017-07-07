@@ -134,7 +134,7 @@ export default {
     position: absolute;
     top: 0;
     bottom: 0;
-    box-shadow: 0 0 5px 1px white;
+    box-shadow: 0 0 0 1px white;
 }
 
 .tape {
