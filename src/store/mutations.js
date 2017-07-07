@@ -2,7 +2,8 @@ export const types = {
     MIDI_CONNECT_INPUT: 'MIDI_CONNECT_INPUT',
     MIDI_DISCONNECT_INPUT: 'MIDI_DISCONNECT_INPUT',
     MIDI_CONNECT_OUTPUT: 'MIDI_CONNECT_OUTPUT',
-    MIDI_DISCONNECT_OUTPUT: 'MIDI_DISCONNECT_OUTPUT'
+    MIDI_DISCONNECT_OUTPUT: 'MIDI_DISCONNECT_OUTPUT',
+    'UPDATE_UI_MEASURES': 'UPDATE_UI_MEASURES'
 }
 
 export const MIDI_CONNECT_INPUT = (state, {id}) => {
@@ -21,4 +22,9 @@ export const MIDI_DISCONNECT_INPUT = (state, {id}) => {
 export const MIDI_DISCONNECT_OUTPUT = (state, {id}) => {
     const index = state.midi.outputs.indexOf(id)
     if (index >= 0) state.midi.outputs.splice(index, 1)
+}
+
+export const UPDATE_UI_MEASURES = (state, {pixelsPerBeat, panBeats}) => {
+    state.ui.pixelsPerBeat = pixelsPerBeat
+    state.ui.panBeats = panBeats
 }

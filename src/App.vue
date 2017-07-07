@@ -1,13 +1,5 @@
 <template lang="html">
-    <div class="pianoroll">
-        <div class="note" :style="{
-                bottom: `${(note % 64) * 12}px`,
-                [note > 64 ? 'right':'left']: '0px'
-            }"
-            v-for="note in playingNotes">
-            {{ noteName(note) }}
-        </div>
-    </div>
+    <ArrangementPanel />
 </template>
 
 <script>
@@ -17,9 +9,17 @@ import R from 'ramda'
 import SynthNote from './SynthNote'
 import webmidi from 'webmidi'
 
+import store from './store'
+
+import ArrangementPanel from './components/ArrangementPanel'
+
 window.webmidi = webmidi
 
 export default {
+    store,
+    components: {
+        ArrangementPanel
+    },
     data () {
         return {
             octave: 5,
@@ -74,7 +74,7 @@ export default {
             const key = event.key.toLowerCase()
             switch (key) {
                 case 'z':
-                case 'x':a
+                case 'x':
                     break
                 default:
                     this.$set(this.keyboardState, key, false)
@@ -119,7 +119,10 @@ export default {
 const diff = (a, b) => a - b
 </script>
 
-<style lang="css">
+<style lang="scss">
+
+@import "./core";
+@import "./layout";
 
 html, body {
     margin: 0;
@@ -127,21 +130,8 @@ html, body {
     height: 100%;
     font-size: 9px;
     font-family: Arial, sans-serif;
-}
-
-.pianoroll {
-    position: relative;
-    height: 100%;
-}
-
-.note {
-    box-sizing: border-box;
-    position: absolute;
-    color: #aaa;
-    /*left: 0;*/
-    width: 50%;
-    height: 10px;
-    background-color: #333;
+    background: black;
+    overflow: hidden;
 }
 
 </style>

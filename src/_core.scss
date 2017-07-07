@@ -1,0 +1,17 @@
+$bg: black;
+$detail: #333;
+
+$theme-1: #BDBBF1;
+$theme-2: #79E39B;
+$theme-3: white;
+$theme-4: #FF005B;
+
+$tape-active: $theme-4;
+$tape-inactive: mix($tape-active, $detail, 10%);
+$tape-selected: $theme-2;
+
+$unit: 8px;
+$unit-half: $unit / 2;
+$unit-x2: $unit * 2;
+$unit-x3: $unit * 3;
+$unit-x4: $unit * 4;

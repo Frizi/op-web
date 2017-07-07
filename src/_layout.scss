@@ -1,0 +1,46 @@
+[layout] {
+  display: flex;
+  align-items: stretch;
+  > * {
+    flex-shrink: 0;
+  }
+}
+
+[layout~=column] {
+  flex-direction: column;
+}
+
+[layout~=row] {
+  flex-direction: row;
+}
+
+[layout~=center] {
+  align-items: center;
+}
+
+@mixin spacing($name, $size) {
+  [layout~=#{$name}] {
+    &[layout~=row] {
+      > * + * {
+        margin-left: $size;
+      }
+    }
+
+    &[layout~=column] {
+      > * + * {
+        margin-top: $size;
+      }
+    }
+  }
+}
+
+@include spacing(u05, $unit-half);
+@include spacing(u1, $unit);
+@include spacing(u2, $unit-x2);
+@include spacing(u3, $unit-x3);
+@include spacing(u4, $unit-x4);
+
+
+[flex] {
+  flex: 1;
+}

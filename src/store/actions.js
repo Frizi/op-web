@@ -16,3 +16,7 @@ export const midiUpdateDevices = ({commit, state}, {inputs, outputs}) => {
     addedIns.forEach(id => commit(types.MIDI_CONNECT_INPUT, {id}))
     addedOuts.forEach(id => commit(types.MIDI_CONNECT_OUTPUT, {id}))
 }
+
+export const updateUiMeasures = ({commit}, newMeasures) => {
+    commit(types.UPDATE_UI_MEASURES, newMeasures)
+}

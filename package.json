@@ -5,13 +5,22 @@
   "author": "Frizi <frizi09@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "vue build --config config.js"
+    "start": "vue build --config config.js",
+    "test": "mocha --compilers js:babel-core/register"
   },
   "dependencies": {
     "invariant": "^2.2.2",
+    "node-sass": "^4.5.3",
     "ramda": "^0.24.1",
+    "sass-loader": "^6.0.6",
     "tone": "^0.10.0",
     "vuex": "^2.3.1",
     "webmidi": "^2.0.0-rc.5"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-preset-es2015": "^6.24.1",
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2"
   }
 }
