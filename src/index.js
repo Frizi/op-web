@@ -7,8 +7,8 @@ import './audio/MidiCtx'
 import './audio/audioCtx'
 
 new Vue({
-    el: '#app',
-    render (h) {
-        return h(App)
-    }
+  el: '#app',
+  render (h) {
+    return h(App)
+  }
 })

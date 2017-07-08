@@ -6,36 +6,36 @@ import {
 } from '../measures'
 
 export const tapes = (state) => {
-    const clips = state.clips
-    return R.map(
-        R.evolve({
-            clips: R.map(
-                R.pipe(
-                    R.propEq('id'),
-                    R.find(R.__, state.clips)
-                )
-            )
-        }),
-        state.tapes
-    )
+  const clips = state.clips
+  return R.map(
+    R.evolve({
+      clips: R.map(
+        R.pipe(
+          R.propEq('id'),
+          R.find(R.__, state.clips)
+        )
+      )
+    }),
+    state.tapes
+  )
 }
 
 export const uiMeasures = (state) => {
-    const {
-        pixelsPerBeat,
-        panBeats
-    } = state.ui
+  const {
+    pixelsPerBeat,
+    panBeats
+  } = state.ui
 
-    return {
-        pixelsPerBeat,
-        panBeats
-    }
+  return {
+    pixelsPerBeat,
+    panBeats
+  }
 }
 
 export const secondsToBeats = state => {
-    const metre = state.metre
-    const tempo = state.tempo
-    return seconds => rawSecondsToBeats(seconds, tempo, metre)
+  const metre = state.metre
+  const tempo = state.tempo
+  return seconds => rawSecondsToBeats(seconds, tempo, metre)
 }
 
 export const beatsPerBar = state => rawBeatsPerBar(state.metre)
@@ -44,11 +44,11 @@ export const metre = state => state.metre
 export const tempo = state => state.tempo
 
 export const allActiveNotes = state => {
-    return R.pipe(
-        R.chain(R.prop('notes')),
-        R.groupBy(R.prop('number')),
-        R.map(R.reduce(R.maxBy(R.prop('velocity')), {velocity: -1})),
-        R.values,
-        R.sortBy(R.prop('number'))
-    )(state.midi.inputs)
+  return R.pipe(
+    R.chain(R.prop('notes')),
+    R.groupBy(R.prop('number')),
+    R.map(R.reduce(R.maxBy(R.prop('velocity')), {velocity: -1})),
+    R.values,
+    R.sortBy(R.prop('number'))
+  )(state.midi.inputs)
 }
