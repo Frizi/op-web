@@ -9,6 +9,8 @@ const clipsBackingStore = {
 
 }
 
+console.log('audioctx')
+
 var masterCompressor = new Tone.Compressor();
 Tone.Master.chain(masterCompressor);
 

@@ -14,16 +14,21 @@
                 :value="metre[1]":step="2" :min="2" :max="16"
                 @update="updateMetre([metre[0], $event])" />
         </div>
+        <div class="framed">
+            <RecordingSwitch />
+        </div>
     </div>
 </template>
 
 <script>
 import {mapGetters, mapActions} from 'vuex'
 import NumberSlider from './NumberSlider'
+import RecordingSwitch from './RecordingSwitch'
 
 export default {
     components: {
-        NumberSlider
+        NumberSlider,
+        RecordingSwitch
     },
     data () {
         return {

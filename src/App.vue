@@ -4,14 +4,6 @@
         <ArrangementPanel />
         <KeyboardController />
         <audio></audio>
-        <label>
-            <input
-                type="checkbox"
-                :checked="isRecording"
-                @change="setRecording($event.target.checked)"
-            />
-            <span :class="{recording: isRecording}">RED MEANS RECORDING</span>
-        </label>
     </div>
 </template>
 
@@ -20,28 +12,14 @@ import store from './store'
 import SettingsPanel from './components/SettingsPanel'
 import ArrangementPanel from './components/ArrangementPanel'
 import KeyboardController from './components/KeyboardController'
-import {mapGetters, mapActions} from 'vuex'
-
 export default {
     store,
     components: {
         SettingsPanel,
         ArrangementPanel,
         KeyboardController
-    },
-    computed: {
-        ...mapGetters(['isRecording'])
-    },
-    methods: {
-        ...mapActions(['setRecording'])
-    },
-    docEvents: {
-        keypress (e) {
-            if (e.code === 'KeyR') {
-                this.setRecording(!this.isRecording)
-            }
-        }
     }
+
 }
 </script>
 
@@ -60,11 +38,4 @@ html, body {
     overflow: hidden;
 }
 
-label span {
-    color: white;
-}
-
-.recording {
-    color: red;
-}
 </style>

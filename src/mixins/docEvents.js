@@ -12,7 +12,7 @@ Vue.mixin({
            }
         }
     },
-    desroyed () {
+    destroyed () {
         if (this._boundDocEvents) {
             this._boundDocEvents.forEach(([eventName, bound]) => {
                 document.removeEventListener(eventName, bound, false)

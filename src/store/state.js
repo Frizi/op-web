@@ -2,7 +2,8 @@ export default {
     ui: {
         panBeats: 0,
         pixelsPerBeat: 40,
-        cursorPosition: 0
+        cursorPosition: 0,
+        selectedTape: null
     },
     tempo: 120,
     metre: [4, 4],

@@ -1,10 +1,11 @@
-$bg: black;
-$detail: #333;
-
 $theme-1: #BDBBF1;
 $theme-2: #79E39B;
 $theme-3: white;
 $theme-4: #FF005B;
+
+$bg: black;
+$detail: #333;
+$detail-lighter: mix($theme-3, $detail, 20%);
 
 $tape-active: $theme-4;
 $tape-inactive: mix($tape-active, $detail, 10%);
