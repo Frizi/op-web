@@ -1,7 +1,18 @@
 <template lang="html">
     <div layout="column u1">
-        <ViewSlider :region="region" :totalBeats="showBeats" :tapes="tapes" @update="updateRegion"/>
-        <Tapes :region="region" :tapes="tapes"/>
+        <ViewSlider
+            :region="region"
+            :totalBeats="showBeats"
+            :tapes="tapes"
+            @updateRegion="updateRegion"
+        />
+        <BarMarks :region="region" />
+        <Tapes
+            :region="region"
+            :totalBeats="showBeats"
+            :tapes="tapes"
+            @updateRegion="updateRegion"
+        />
     </div>
 </template>
 
@@ -10,10 +21,12 @@ import R from 'ramda'
 import {mapGetters, mapActions} from 'vuex'
 import Tapes from './Tapes'
 import ViewSlider from './ViewSlider'
+import BarMarks from './BarMarks'
 export default {
     components: {
         Tapes,
-        ViewSlider
+        ViewSlider,
+        BarMarks
     },
     data () {
         return {

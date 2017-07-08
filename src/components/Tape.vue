@@ -1,6 +1,6 @@
 <template lang="html">
     <div class="tape">
-        <Clip v-for="clip in clipsInRegion" :clip="clip" :region="region"/>
+        <Clip v-for="clip in clipsInRegion" :key="clip.id" :clip="clip" :region="region"/>
     </div>
 </template>
 

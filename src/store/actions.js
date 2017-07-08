@@ -20,3 +20,11 @@ export const midiUpdateDevices = ({commit, state}, {inputs, outputs}) => {
 export const updateUiMeasures = ({commit}, newMeasures) => {
     commit(types.UPDATE_UI_MEASURES, newMeasures)
 }
+
+export const updateTempo = ({commit}, tempo) => {
+    commit(types.UPDATE_TEMPO, tempo)
+}
+
+export const updateMetre = ({commit}, metre) => {
+    commit(types.UPDATE_METRE, metre)
+}

@@ -82,7 +82,7 @@ export default {
                 Math.max(0, this.region[0] + moveX)
             )
 
-            this.$emit('update', [start, start + width])
+            this.$emit('updateRegion', [start, start + width])
         },
         handleWheel (e) {
             const bounds = this.$el.getBoundingClientRect()
@@ -106,7 +106,7 @@ export default {
                 Math.max(0, regionStart + moveX + lenShift / 2)
             )
 
-            this.$emit('update', [newStart, newStart + newLen])
+            this.$emit('updateRegion', [newStart, newStart + newLen])
         },
         clipStyle (clip) {
             const total = this.totalBeats

@@ -1,7 +1,8 @@
 import R from 'ramda'
 
 import {
-    secondsToBeats as rawSecondsToBeats
+    secondsToBeats as rawSecondsToBeats,
+    beatsPerBar as rawBeatsPerBar
 } from '../measures'
 
 export const tapes = (state) => {
@@ -36,3 +37,8 @@ export const secondsToBeats = state => {
     const tempo = state.tempo
     return seconds => rawSecondsToBeats(seconds, tempo, metre)
 }
+
+export const beatsPerBar = state => rawBeatsPerBar(state.metre)
+
+export const metre = state => state.metre
+export const tempo = state => state.tempo

@@ -1,5 +1,8 @@
 <template lang="html">
-    <ArrangementPanel />
+    <div layout="column u1">
+        <SettingsPanel />
+        <ArrangementPanel />
+    </div>
 </template>
 
 <script>
@@ -11,6 +14,7 @@ import webmidi from 'webmidi'
 
 import store from './store'
 
+import SettingsPanel from './components/SettingsPanel'
 import ArrangementPanel from './components/ArrangementPanel'
 
 window.webmidi = webmidi
@@ -18,6 +22,7 @@ window.webmidi = webmidi
 export default {
     store,
     components: {
+        SettingsPanel,
         ArrangementPanel
     },
     data () {
