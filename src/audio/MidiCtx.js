@@ -9,6 +9,8 @@ window.webmidi = webmidi
 const handleInput = i => {
     const driver = drivers.find(d => d.type === 'input' && d.match(i))
     if (driver) driver.init(i)
+
+    i.addListener('')
 }
 
 const handleOutput = o => {

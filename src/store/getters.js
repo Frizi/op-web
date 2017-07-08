@@ -42,3 +42,13 @@ export const beatsPerBar = state => rawBeatsPerBar(state.metre)
 
 export const metre = state => state.metre
 export const tempo = state => state.tempo
+
+export const allActiveNotes = state => {
+    return R.pipe(
+        R.chain(R.prop('notes')),
+        R.groupBy(R.prop('number')),
+        R.map(R.reduce(R.maxBy(R.prop('velocity')), {velocity: -1})),
+        R.values,
+        R.sortBy(R.prop('number'))
+    )(state.midi.inputs)
+}

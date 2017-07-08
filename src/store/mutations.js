@@ -5,27 +5,62 @@ export const types = {
     MIDI_DISCONNECT_INPUT: 'MIDI_DISCONNECT_INPUT',
     MIDI_CONNECT_OUTPUT: 'MIDI_CONNECT_OUTPUT',
     MIDI_DISCONNECT_OUTPUT: 'MIDI_DISCONNECT_OUTPUT',
+    MIDI_NOTE_SET: 'MIDI_NOTE_SET',
+    MIDI_NOTE_END: 'MIDI_NOTE_END',
     UPDATE_UI_MEASURES: 'UPDATE_UI_MEASURES',
     UPDATE_TEMPO: 'UPDATE_TEMPO',
     UPDATE_METRE: 'UPDATE_METRE'
 }
 
-export const MIDI_CONNECT_INPUT = (state, {id}) => {
-    state.midi.inputs.push(id)
+export const MIDI_CONNECT_INPUT = (state, {id, name, virtual}) => {
+    state.midi.inputs.push({
+        id,
+        name,
+        virtual,
+        notes: []
+    })
 }
 
-export const MIDI_CONNECT_OUTPUT = (state, {id}) => {
-    state.midi.outputs.push(id)
+export const MIDI_CONNECT_OUTPUT = (state, {id, name, virtual}) => {
+    state.midi.outputs.push({
+        id,
+        name,
+        virtual
+    })
 }
 
 export const MIDI_DISCONNECT_INPUT = (state, {id}) => {
-    const index = state.midi.inputs.indexOf(id)
+    const index = state.midi.inputs.findIndex(i => i.id === id)
     if (index >= 0) state.midi.inputs.splice(index, 1)
 }
 
 export const MIDI_DISCONNECT_OUTPUT = (state, {id}) => {
-    const index = state.midi.outputs.indexOf(id)
+    const index = state.midi.outputs.findIndex(o => o.id === id)
     if (index >= 0) state.midi.outputs.splice(index, 1)
+}
+
+export const MIDI_NOTE_SET = (state, {inputId, noteNumber, velocity}) => {
+    const input = state.midi.inputs.find(input => input.id === inputId)
+    if (input) {
+        const existingNote = input.notes.find(note => note.number === noteNumber)
+        if (existingNote) {
+            existingNote.velocity = velocity
+        }
+        else {
+            input.notes.push({
+                number: noteNumber,
+                velocity
+            })
+        }
+    }
+}
+
+export const MIDI_NOTE_END = (state, {inputId, channel, noteNumber}) => {
+    const input = state.midi.inputs.find(input => input.id === inputId)
+    if (input) {
+        const index = input.notes.findIndex(note => note.number === noteNumber)
+        if (index >= 0) input.notes.splice(index, 1)
+    }
 }
 
 export const UPDATE_UI_MEASURES = (state, {pixelsPerBeat, panBeats}) => {
