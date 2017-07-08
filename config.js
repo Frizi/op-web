@@ -5,6 +5,7 @@ module.exports = {
         title: 'OP-Web'
     },
     webpack: {
+        devtool: 'eval',
         output: {
             publicPath: ''
         }

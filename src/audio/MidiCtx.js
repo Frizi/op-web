@@ -10,7 +10,19 @@ const handleInput = i => {
     const driver = drivers.find(d => d.type === 'input' && d.match(i))
     if (driver) driver.init(i)
 
-    i.addListener('')
+    i.addListener('noteon', 'all', (e) => {
+        store.dispatch('midiNoteon', {
+            inputId:e.target.id,
+            noteNumber: e.note.number,
+            velocity: e.rawVelocity
+        })
+    })
+    i.addListener('noteoff', 'all', (e) => {
+        store.dispatch('midiNoteoff', {
+            inputId: e.target.id,
+            noteNumber: e.note.number
+        })
+    })
 }
 
 const handleOutput = o => {
@@ -19,9 +31,10 @@ const handleOutput = o => {
 }
 
 const updateStore = () => {
-    const outputs = webmidi.outputs.map(R.prop('id'))
-    const inputs = webmidi.inputs.map(R.prop('id'))
-    store.dispatch('midiUpdateDevices', {inputs, outputs})
+    store.dispatch('midiUpdateDevices', {
+        inputs: webmidi.inputs,
+        outputs: webmidi.outputs
+    })
 }
 
 webmidi.enable(() => {

@@ -9,11 +9,13 @@ const getName = id => R.pipe(
 export const midiUpdateDevices = ({commit, state}, {inputs, outputs}) => {
     const oldIns = state.midi.inputs.filter(i => i.virtual === false)
     const oldOuts = state.midi.outputs.filter(i => i.virtual === false)
+    const inputIds = R.pluck('id', inputs)
+    const outputIds = R.pluck('id', outputs)
 
-    const addedIns = R.difference(inputs, oldIns)
-    const removedIns = R.difference(oldIns, inputs)
-    const addedOuts = R.difference(outputs, oldOuts)
-    const removedOuts = R.difference(oldOuts, outputs)
+    const addedIns = R.difference(inputIds, oldIns)
+    const removedIns = R.difference(oldIns, inputIds)
+    const addedOuts = R.difference(outputIds, oldOuts)
+    const removedOuts = R.difference(oldOuts, outputIds)
 
     removedIns.forEach(id => commit(types.MIDI_DISCONNECT_INPUT, {id}))
     removedOuts.forEach(id => commit(types.MIDI_DISCONNECT_OUTPUT, {id}))
@@ -26,7 +28,7 @@ export const midiUpdateDevices = ({commit, state}, {inputs, outputs}) => {
 
     addedOuts.forEach(id => commit(types.MIDI_CONNECT_OUTPUT, {
         id,
-        name: getName(id)(inputs),
+        name: getName(id)(outputs),
         virtual: false
     }))
 }
