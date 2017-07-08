@@ -9,7 +9,8 @@ export const types = {
     MIDI_NOTE_END: 'MIDI_NOTE_END',
     UPDATE_UI_MEASURES: 'UPDATE_UI_MEASURES',
     UPDATE_TEMPO: 'UPDATE_TEMPO',
-    UPDATE_METRE: 'UPDATE_METRE'
+    UPDATE_METRE: 'UPDATE_METRE',
+    SET_RECORDING: 'SET_RECORDING'
 }
 
 export const MIDI_CONNECT_INPUT = (state, {id, name, virtual}) => {
@@ -75,4 +76,8 @@ export const UPDATE_TEMPO = (state, tempo) => {
 export const UPDATE_METRE = (state, metre) => {
     Vue.set(state.metre, 0, metre[0])
     Vue.set(state.metre, 1, metre[1])
+}
+
+export const SET_RECORDING = (state, recording) => {
+    state.playback.recording = recording
 }

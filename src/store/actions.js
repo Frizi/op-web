@@ -62,3 +62,7 @@ export const midiNoteon = ({commit}, {inputId, noteNumber, velocity}) => {
 export const midiNoteoff = ({commit}, {inputId, noteNumber}) => {
     commit(types.MIDI_NOTE_END, {inputId, noteNumber})
 }
+
+export const setRecording = ({commit}, recording) => {
+    commit(types.SET_RECORDING, !!recording)
+}

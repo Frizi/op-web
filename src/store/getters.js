@@ -52,3 +52,5 @@ export const allActiveNotes = state => {
         R.sortBy(R.prop('number'))
     )(state.midi.inputs)
 }
+
+export const isRecording = state => state.playback.recording
