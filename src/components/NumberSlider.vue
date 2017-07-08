@@ -62,7 +62,7 @@ export default {
 
         applyEdit () {
             this.editing = false
-            const newVal = Math.floor(parseFloat(this.internalValue) / this.step) * this.step
+            const newVal = Math.round(parseFloat(this.internalValue) / this.step) * this.step
             const boundVal = Math.max(this.min, Math.min(this.max, newVal))
             this.$emit('update', boundVal)
         },

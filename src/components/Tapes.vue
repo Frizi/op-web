@@ -37,7 +37,7 @@ export default {
 
             const moveX = e.deltaX * regionLen / elWidth
 
-            const newStart = Math.max(0, Math.min(this.totalBeats, regionStart + moveX))
+            const newStart = Math.max(0, Math.min(this.totalBeats - regionLen, regionStart + moveX))
 
             this.$emit('updateRegion', [newStart, newStart + regionLen])
         }
