@@ -1,9 +1,9 @@
 <template lang="html">
-    <div layout="column u1">
-        <SettingsPanel />
-        <ArrangementPanel />
-        <KeyboardController />
-    </div>
+  <div layout="column u1">
+    <SettingsPanel />
+    <ArrangementPanel />
+    <KeyboardController />
+  </div>
 </template>
 
 <script>
@@ -13,12 +13,12 @@ import ArrangementPanel from './components/ArrangementPanel'
 import KeyboardController from './components/KeyboardController'
 
 export default {
-    store,
-    components: {
-        SettingsPanel,
-        ArrangementPanel,
-        KeyboardController
-    }
+  store,
+  components: {
+    SettingsPanel,
+    ArrangementPanel,
+    KeyboardController
+  }
 }
 </script>
 
@@ -28,13 +28,13 @@ export default {
 @import "./layout";
 
 html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    font-size: 9px;
-    font-family: Arial, sans-serif;
-    background: black;
-    overflow: hidden;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 9px;
+  font-family: Arial, sans-serif;
+  background: black;
+  overflow: hidden;
 }
 
 </style>
