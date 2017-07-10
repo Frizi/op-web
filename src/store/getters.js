@@ -54,3 +54,7 @@ export const allActiveNotes = state => {
 }
 
 export const isRecording = state => state.playback.recording
+
+export const cursorPosition = state => state.ui.cursorPosition
+export const playbackData = state => state.playback
+export const playTimestamp = state => state.playback.playTimestamp

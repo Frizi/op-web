@@ -3,17 +3,12 @@ import Tone from 'tone'
 import {noteFrequency} from '../notes'
 import R from 'ramda'
 
-const recordClip = ''
-
-const clipsBackingStore = {
+const clipNodes = {
 
 }
 
-console.log('audioctx')
-
 var masterCompressor = new Tone.Compressor();
 Tone.Master.chain(masterCompressor);
-
 
 var synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
 synth.set({
@@ -53,8 +48,11 @@ store.watch((_, g) => g.isRecording, recording => {
         recorder.stop()
     }
 })
+
 store.watch(s => s.tempo, tempo => { Tone.Transport.bpm.value = tempo })
 store.watch(s => s.metre, metre => { Tone.Transport.bpm.timeSignature = metre })
+
+
 
 store.watch((_, g) => g.allActiveNotes, (notes, oldNotes) => {
     const release = R.difference(R.pluck('number', oldNotes), R.pluck('number', notes))
@@ -73,3 +71,9 @@ store.watch((_, g) => g.allActiveNotes, (notes, oldNotes) => {
         synth.triggerRelease(noteFrequency(n))
     })
 })
+
+Tone.Transport.start()
+let lastTicks = 0
+Tone.Transport.scheduleRepeat((...args) => {
+    lastTicks = Tone.Transport.ticks
+}, '8n')

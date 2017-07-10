@@ -1,3 +1,5 @@
+import store from '../store'
+import R from 'ramda'
 export default {
     type: 'output',
     match (e) {
@@ -8,8 +10,15 @@ export default {
         e.sendControlChange(0, 2)
         this.input = e
 
-        return {
+        store.watch((_, g) => g.allActiveNotes, (notes, oldNotes) => {
+            const newIds = R.pluck('number', notes || [])
+            const oldIds = R.pluck('number', oldNotes || [])
+            const startNotes = R.difference(newIds, oldIds)
+            const endNotes = R.difference(oldIds, newIds)
 
-        }
+            startNotes.forEach(number => e.playNote(number, 1, {velocity: 1}))
+            endNotes.forEach(number => e.stopNote(number, 1))
+
+        }, {immediate: true})
     }
 }

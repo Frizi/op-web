@@ -6,13 +6,15 @@
             :tapes="tapes"
             @updateRegion="updateRegion"
         />
-        <BarMarks :region="region" />
-        <Tapes
-            :region="region"
-            :totalBeats="showBeats"
-            :tapes="tapes"
-            @updateRegion="updateRegion"
-        />
+        <Playback layout="column" :region="region" :totalBeats="showBeats">
+            <BarMarks :region="region" />
+            <Tapes
+                :region="region"
+                :totalBeats="showBeats"
+                :tapes="tapes"
+                @updateRegion="updateRegion"
+            />
+        </Playback>
     </div>
 </template>
 
@@ -22,11 +24,13 @@ import {mapGetters, mapActions} from 'vuex'
 import Tapes from './Tapes'
 import ViewSlider from './ViewSlider'
 import BarMarks from './BarMarks'
+import Playback from './Playback'
 export default {
     components: {
         Tapes,
         ViewSlider,
-        BarMarks
+        BarMarks,
+        Playback
     },
     data () {
         return {
