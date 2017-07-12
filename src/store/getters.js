@@ -53,8 +53,18 @@ export const allActiveNotes = state => {
     )(state.midi.inputs)
 }
 
-export const isRecording = state => state.playback.recording
+export const isRecording = state => state.recording
+export const isPlaying = state => state.playing
 
 export const cursorPosition = state => state.ui.cursorPosition
-export const playbackData = state => state.playback
-export const playTimestamp = state => state.playback.playTimestamp
+export const currentTime = state => state.currentTime
+
+export const cursorUnitTime = state => {
+    return 60 * (state.ui.cursorPosition) / state.tempo - Tone.context.lookAhead
+}
+
+import Tone from 'tone'
+
+export const cursorTickTime = state => {
+    return Math.round(state.ui.cursorPosition * Tone.Transport.PPQ)
+}

@@ -6,7 +6,7 @@
             :tapes="tapes"
             @updateRegion="updateRegion"
         />
-        <Playback layout="column" :region="region" :totalBeats="showBeats">
+        <Timeline layout="column" :region="region" :totalBeats="showBeats">
             <BarMarks :region="region" />
             <Tapes
                 :region="region"
@@ -14,7 +14,7 @@
                 :tapes="tapes"
                 @updateRegion="updateRegion"
             />
-        </Playback>
+        </Timeline>
     </div>
 </template>
 
@@ -24,13 +24,13 @@ import {mapGetters, mapActions} from 'vuex'
 import Tapes from './Tapes'
 import ViewSlider from './ViewSlider'
 import BarMarks from './BarMarks'
-import Playback from './Playback'
+import Timeline from './Timeline'
 export default {
     components: {
         Tapes,
         ViewSlider,
         BarMarks,
-        Playback
+        Timeline
     },
     data () {
         return {

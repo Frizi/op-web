@@ -7,6 +7,10 @@ const clipNodes = {
 
 }
 
+Tone.context.updateInterval = 1/120
+
+Tone.Transport.set({PPQ: 1536})
+
 var masterCompressor = new Tone.Compressor();
 Tone.Master.chain(masterCompressor);
 
@@ -50,9 +54,7 @@ store.watch((_, g) => g.isRecording, recording => {
 })
 
 store.watch(s => s.tempo, tempo => { Tone.Transport.bpm.value = tempo })
-store.watch(s => s.metre, metre => { Tone.Transport.bpm.timeSignature = metre })
-
-
+store.watch(s => s.metre, metre => { Tone.Transport.timeSignature = metre })
 
 store.watch((_, g) => g.allActiveNotes, (notes, oldNotes) => {
     const release = R.difference(R.pluck('number', oldNotes), R.pluck('number', notes))
@@ -72,8 +74,50 @@ store.watch((_, g) => g.allActiveNotes, (notes, oldNotes) => {
     })
 })
 
-Tone.Transport.start()
 let lastTicks = 0
 Tone.Transport.scheduleRepeat((...args) => {
     lastTicks = Tone.Transport.ticks
 }, '8n')
+
+let playtickFrame = null
+store.watch((_, g) => g.isPlaying, (playing) => {
+    if (playing) {
+        const startTime = store.state.ui.cursorPosition
+        store.commit('SET_TIME', startTime)
+
+        const unitTime = store.getters.cursorUnitTime
+        Tone.Transport.start("+0", unitTime)
+        Tone.Transport.schedule(playTick, unitTime)
+        // playtickFrame = requestAnimationFrame(playTick)
+    } else {
+        Tone.Transport.stop()
+
+        Tone.Transport.ticks = store.getters.cursorTickTime
+        commitBeat()
+        cancelAnimationFrame(playtickFrame)
+        playtickFrame = null
+    }
+})
+
+store.watch((_, g) => g.cursorTickTime, tick => {
+    if (!store.getters.isPlaying) {
+        Tone.Transport.ticks = tick
+        commitBeat()
+    }
+})
+
+function playTick() {
+    if (playtickFrame) return
+    playtickFrame = requestAnimationFrame(t => {
+        playtickFrame = null
+        playTick(t)
+    })
+    commitBeat()
+}
+
+const commitBeat = () => {
+    const currentBeat = Tone.Transport.ticks / Tone.Transport.PPQ
+    if (store.state.currentTime !== currentBeat) {
+        store.commit('SET_TIME', currentBeat)
+    }
+}

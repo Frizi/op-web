@@ -7,11 +7,9 @@ export default {
     },
     tempo: 120,
     metre: [4, 4],
-    playback: {
-        recording: false,
-        playTimestamp: null,
-        playOffset: 0
-    },
+    recording: false,
+    playing: false,
+    currentTime: 0,
     tapes: [{
         id: '4F4F0BC1-9465-4786-8800-A575BB3D911A',
         name: 'Tape 1',

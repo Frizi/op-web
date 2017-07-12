@@ -1,4 +1,3 @@
-import {types} from './mutations'
 import R from 'ramda'
 
 const getName = id => R.pipe(
@@ -17,16 +16,16 @@ export const midiUpdateDevices = ({commit, state}, {inputs, outputs}) => {
     const addedOuts = R.difference(outputIds, oldOuts)
     const removedOuts = R.difference(oldOuts, outputIds)
 
-    removedIns.forEach(id => commit(types.MIDI_DISCONNECT_INPUT, {id}))
-    removedOuts.forEach(id => commit(types.MIDI_DISCONNECT_OUTPUT, {id}))
+    removedIns.forEach(id => commit('MIDI_DISCONNECT_INPUT', {id}))
+    removedOuts.forEach(id => commit('MIDI_DISCONNECT_OUTPUT', {id}))
 
-    addedIns.forEach(id => commit(types.MIDI_CONNECT_INPUT, {
+    addedIns.forEach(id => commit('MIDI_CONNECT_INPUT', {
         id,
         name: getName(id)(inputs),
         virtual: false
     }))
 
-    addedOuts.forEach(id => commit(types.MIDI_CONNECT_OUTPUT, {
+    addedOuts.forEach(id => commit('MIDI_CONNECT_OUTPUT', {
         id,
         name: getName(id)(outputs),
         virtual: false
@@ -34,35 +33,47 @@ export const midiUpdateDevices = ({commit, state}, {inputs, outputs}) => {
 }
 
 export const midiConnectVirtualInput = ({commit, state}, {id, name}) => {
-    commit(types.MIDI_CONNECT_INPUT, {id, name, virtual: true})
+    commit('MIDI_CONNECT_INPUT', {id, name, virtual: true})
 }
 
 export const midiDisconnectVirtualInput = ({commit, state}, {id}) => {
     if (state.midi.inputs.find(i => i.id === id && i.virtual === true)) {
-        commit(types.MIDI_DISCONNECT_INPUT, {id})
+        commit('MIDI_DISCONNECT_INPUT', {id})
     }
 }
 
 export const updateUiMeasures = ({commit}, newMeasures) => {
-    commit(types.UPDATE_UI_MEASURES, newMeasures)
+    commit('UPDATE_UI_MEASURES', newMeasures)
 }
 
 export const updateTempo = ({commit}, tempo) => {
-    commit(types.UPDATE_TEMPO, tempo)
+    commit('UPDATE_TEMPO', tempo)
 }
 
 export const updateMetre = ({commit}, metre) => {
-    commit(types.UPDATE_METRE, metre)
+    commit('UPDATE_METRE', metre)
 }
 
 export const midiNoteon = ({commit}, {inputId, noteNumber, velocity}) => {
-    commit(types.MIDI_NOTE_SET, {inputId, noteNumber, velocity})
+    commit('MIDI_NOTE_SET', {inputId, noteNumber, velocity})
 }
 
 export const midiNoteoff = ({commit}, {inputId, noteNumber}) => {
-    commit(types.MIDI_NOTE_END, {inputId, noteNumber})
+    commit('MIDI_NOTE_END', {inputId, noteNumber})
 }
 
-export const setRecording = ({commit}, recording) => {
-    commit(types.SET_RECORDING, !!recording)
+export const setRecording = ({commit, state}, recording) => {
+    if (state.recording !== recording) {
+        commit('SET_RECORDING', !!recording)
+    }
+}
+
+export const setPlaying = ({commit, state}, flag) => {
+    if(state.playing !== flag) {
+        commit('SET_PLAYING', flag)
+    }
+}
+
+export const setCursor = ({commit}, pos) => {
+    commit('SET_CURSOR', pos)
 }

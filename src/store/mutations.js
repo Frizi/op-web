@@ -1,18 +1,5 @@
 import Vue from 'vue'
 
-export const types = {
-    MIDI_CONNECT_INPUT: 'MIDI_CONNECT_INPUT',
-    MIDI_DISCONNECT_INPUT: 'MIDI_DISCONNECT_INPUT',
-    MIDI_CONNECT_OUTPUT: 'MIDI_CONNECT_OUTPUT',
-    MIDI_DISCONNECT_OUTPUT: 'MIDI_DISCONNECT_OUTPUT',
-    MIDI_NOTE_SET: 'MIDI_NOTE_SET',
-    MIDI_NOTE_END: 'MIDI_NOTE_END',
-    UPDATE_UI_MEASURES: 'UPDATE_UI_MEASURES',
-    UPDATE_TEMPO: 'UPDATE_TEMPO',
-    UPDATE_METRE: 'UPDATE_METRE',
-    SET_RECORDING: 'SET_RECORDING'
-}
-
 export const MIDI_CONNECT_INPUT = (state, {id, name, virtual}) => {
     state.midi.inputs.push({
         id,
@@ -79,5 +66,17 @@ export const UPDATE_METRE = (state, metre) => {
 }
 
 export const SET_RECORDING = (state, recording) => {
-    state.playback.recording = recording
+    state.recording = recording
+}
+
+export const SET_PLAYING = (state, playing) => {
+    state.playing = playing
+}
+
+export const SET_TIME = (state, time) => {
+    state.currentTime = time
+}
+
+export const SET_CURSOR = (state, pos) => {
+    state.ui.cursorPosition = pos
 }
