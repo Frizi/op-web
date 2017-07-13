@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="clip" :style="style"></div>
+    <div class="clip" :style="style" :class="state"></div>
 </template>
 
 <script>
@@ -13,6 +13,10 @@ export default {
         region: {
             type: Array,
             required: true
+        },
+        state: {
+            type: String,
+            default: 'default'
         }
     },
     computed: {
@@ -39,8 +43,12 @@ export default {
 .clip {
     position: absolute;
     height: 100%;
-    background-color: $tape-active;
+    background-color: $tape-inactive;
     border-radius: 4px;
+
+    &.active {
+        background-color: $tape-active;
+    }
 }
 
 </style>

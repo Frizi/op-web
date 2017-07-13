@@ -65,12 +65,21 @@ export const UPDATE_METRE = (state, metre) => {
     Vue.set(state.metre, 1, metre[1])
 }
 
-export const SET_RECORDING = (state, recording) => {
-    state.recording = recording
+export const SET_RECORDING = (state, {playing, armRecording, currentTime}) => {
+    state.armRecording = armRecording
+    if (playing && armRecording) {
+        state.recordingStartBeat = currentTime
+    }
 }
 
-export const SET_PLAYING = (state, playing) => {
+export const SET_PLAYING = (state, {playing, armRecording, currentTime}) => {
     state.playing = playing
+    if (playing && armRecording) {
+        state.recordingStartBeat = currentTime
+    }
+    if (!playing) {
+        state.armRecording = false
+    }
 }
 
 export const SET_TIME = (state, time) => {
@@ -79,4 +88,19 @@ export const SET_TIME = (state, time) => {
 
 export const SET_CURSOR = (state, pos) => {
     state.ui.cursorPosition = pos
+}
+
+export const SET_ACTIVE_TAPE = (state, id) => {
+    state.activeTape = id
+}
+
+export const NEW_CLIP = (state, {clip}) => {
+    state.clips.push(clip)
+}
+
+export const ADD_CLIP_TO_TAPE = (state, {tapeId, clipId}) => {
+    const tape = state.tapes.find(t => t.id === tapeId)
+    if (tape) {
+        tape.clips.push(clipId)
+    }
 }

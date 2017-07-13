@@ -3,6 +3,7 @@
         <SettingsPanel />
         <ArrangementPanel />
         <KeyboardController />
+        <KeybindingHandler />
         <audio></audio>
     </div>
 </template>
@@ -12,14 +13,15 @@ import store from './store'
 import SettingsPanel from './components/SettingsPanel'
 import ArrangementPanel from './components/ArrangementPanel'
 import KeyboardController from './components/KeyboardController'
+import KeybindingHandler from './components/KeybindingHandler'
 export default {
     store,
     components: {
         SettingsPanel,
         ArrangementPanel,
-        KeyboardController
+        KeyboardController,
+        KeybindingHandler
     }
-
 }
 </script>
 

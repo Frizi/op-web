@@ -1,6 +1,12 @@
 <template lang="html">
     <div class="tape">
-        <Clip v-for="clip in clipsInRegion" :key="clip.id" :clip="clip" :region="region"/>
+        <Clip
+            v-for="clip in clipsInRegion"
+            :state="active ? 'active': 'defalt'"
+            :key="clip.id"
+            :clip="clip"
+            :region="region"
+        />
     </div>
 </template>
 
@@ -31,6 +37,10 @@ export default {
         region: {
             type: Array,
             required: true
+        },
+        active: {
+            type: Boolean,
+            default: false
         }
     }
 }

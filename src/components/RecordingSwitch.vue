@@ -1,8 +1,8 @@
 <template lang="html">
-    <label layout="row u1 center" :class="{recording: isRecording}">
+    <label layout="row u1 center" :class="{recording: armRecording}">
         <input
             type="checkbox"
-            :checked="isRecording"
+            :checked="armRecording"
             @change="setRecording($event.target.checked)"
         />
         <span class="message">
@@ -40,7 +40,7 @@ const selectLabel = R.reduce((acc, pair) => {
 import {mapGetters, mapActions} from 'vuex'
 export default {
     computed: {
-        ...mapGetters(['isRecording']),
+        ...mapGetters(['armRecording']),
         labelParts () {
             return this.label.split('|')
         }
@@ -54,7 +54,7 @@ export default {
         }
     },
     watch: {
-        isRecording (rec) {
+        armRecording (rec) {
             if (rec) {
                 this.label = selectLabel(Math.random() * totalWeights)
             } else {
@@ -65,7 +65,7 @@ export default {
     docEvents: {
         keypress (e) {
             if (e.code === 'KeyR') {
-                this.setRecording(!this.isRecording)
+                this.setRecording(!this.armRecording)
             }
         }
     }

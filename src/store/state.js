@@ -7,7 +7,9 @@ export default {
     },
     tempo: 120,
     metre: [4, 4],
-    recording: false,
+    armRecording: false,
+    recordingStartBeat: null,
+    activeTape: '4F4F0BC1-9465-4786-8800-A575BB3D911A',
     playing: false,
     currentTime: 0,
     tapes: [{

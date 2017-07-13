@@ -1,8 +1,8 @@
 <template lang="html">
     <div class="cage" @mousedown="handleMouse">
         <slot/>
-        <TimelineMarker v-if="isPlaying" :region="region" :position="cursorPosition" state="default"/>
-        <TimelineMarker :region="region" :position="currentTime" :state="markerState"/>
+        <TimelineMarker :region="region" :position="cursorPosition" :state="cursorState" state="default"/>
+        <TimelineMarker v-if="isPlaying" :region="region" :position="currentTime" :state="markerState"/>
     </div>
 </template>
 
@@ -26,18 +26,16 @@ export default {
         required: true
     },
     computed: {
-        ...mapGetters(['cursorPosition', 'currentTime', 'isPlaying', 'isRecording']),
+        ...mapGetters(['cursorPosition', 'currentTime', 'isPlaying', 'armRecording']),
         markerState () {
-            return R.cond([
-                [R.equals([true, true]), () => 'recording'],
-                [R.equals([true, false]), () => 'playing'],
-                [R.equals([false, true]), () => 'awaiting-record'],
-                [R.T, () => 'default']
-            ])([this.isPlaying, this.isRecording])
+            return this.armRecording ? 'recording' : 'playing'
+        },
+        cursorState () {
+            return (this.armRecording && !this.isPlaying) ? 'awaiting-record' : 'default'
         }
     },
     methods: {
-        ...mapActions(['setPlaying', 'setCursor']),
+        ...mapActions(['setCursor']),
         recalculateRegion () {
             // when playing, keep cursor on the center of view
             const [start, end] = this.region
@@ -61,13 +59,6 @@ export default {
         },
         handleMouse (e) {
             this.setCursor(this.eventToBeat(e))
-        }
-    },
-    docEvents: {
-        keypress (e) {
-            if (e.code === 'Space') {
-                this.setPlaying(!this.isPlaying)
-            }
         }
     }
 }

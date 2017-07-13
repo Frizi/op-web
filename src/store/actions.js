@@ -54,7 +54,10 @@ export const updateMetre = ({commit}, metre) => {
     commit('UPDATE_METRE', metre)
 }
 
-export const midiNoteon = ({commit}, {inputId, noteNumber, velocity}) => {
+export const midiNoteon = ({commit, dispatch, getters}, {inputId, noteNumber, velocity}) => {
+    if (getters.armRecording) {
+        dispatch('setPlaying', true)
+    }
     commit('MIDI_NOTE_SET', {inputId, noteNumber, velocity})
 }
 
@@ -62,18 +65,36 @@ export const midiNoteoff = ({commit}, {inputId, noteNumber}) => {
     commit('MIDI_NOTE_END', {inputId, noteNumber})
 }
 
-export const setRecording = ({commit, state}, recording) => {
-    if (state.recording !== recording) {
-        commit('SET_RECORDING', !!recording)
+export const setRecording = ({commit, state}, armRecording) => {
+    if (state.armRecording !== armRecording) {
+        commit('SET_RECORDING', {
+            armRecording,
+            playing: state.playing,
+            currentTime: state.currentTime
+        })
     }
 }
 
-export const setPlaying = ({commit, state}, flag) => {
-    if(state.playing !== flag) {
-        commit('SET_PLAYING', flag)
+export const setPlaying = ({commit, state}, playing) => {
+    if(state.playing !== playing) {
+            commit('SET_PLAYING', {
+                playing,
+                armRecording: state.armRecording,
+                currentTime: state.ui.cursorPosition
+            })
     }
 }
 
 export const setCursor = ({commit}, pos) => {
     commit('SET_CURSOR', pos)
+}
+
+export const setActiveTape = ({commit}, id) => {
+    commit('SET_ACTIVE_TAPE', id)
+}
+
+export const createClip = ({commit, state}, clip) => {
+    commit('NEW_CLIP', {clip})
+    commit('ADD_CLIP_TO_TAPE', {tapeId: state.activeTape, clipId: clip.id})
+
 }

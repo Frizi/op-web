@@ -3,7 +3,13 @@
         layout="column u1"
         @wheel.prevent.stop="handleWheel"
     >
-        <Tape v-for="(tape, index) in tapes" :key="tape.id" :tape="tape" :region="region"/>
+        <Tape
+            v-for="(tape, index) in tapes"
+            :key="tape.id"
+            :tape="tape"
+            :active="tape.id === active"
+            :region="region"
+        />
     </div>
 </template>
 
@@ -17,6 +23,10 @@ export default {
         tapes: {
             type: Array,
             required: true
+        },
+        active: {
+            type: String,
+            required: false
         },
         region: {
             type: Array,

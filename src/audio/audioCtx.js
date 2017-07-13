@@ -2,17 +2,30 @@ import store from '../store'
 import Tone from 'tone'
 import {noteFrequency} from '../notes'
 import R from 'ramda'
+import uuid from 'uuid/v4'
+console.log(Tone.TimeBase.prototype)
 
+Tone.TimeBase.prototype._primaryExpressions.q = {
+    regexp : /^(\d+)q/i,
+    method (value) {
+        return this._beatsToUnits(parseFloat(value));
+    }
+
+}
+
+const clipBlobs = {
+
+}
 const clipNodes = {
 
 }
 
 Tone.context.updateInterval = 1/120
 
-Tone.Transport.set({PPQ: 1536})
-
 var masterCompressor = new Tone.Compressor();
 Tone.Master.chain(masterCompressor);
+
+// const timeline = new Tone.Timeline()
 
 var synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
 synth.set({
@@ -32,24 +45,60 @@ const recorderNode = Tone.context.createMediaStreamDestination()
 const recorder = new MediaRecorder(recorderNode.stream)
 Tone.Master.connect(recorderNode)
 
-let chunks = []
-recorder.ondataavailable = function(evt) {
-    chunks.push(evt.data);
-};
+const startRecording = () => {
+    const recorderNode = Tone.context.createMediaStreamDestination()
+    const recorder = new MediaRecorder(recorderNode.stream)
+    Tone.Master.connect(recorderNode)
 
-recorder.onstop = function(evt) {
-    var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
-    chunks = []
-    const audioEl = document.querySelector("audio")
-    audioEl.src = URL.createObjectURL(blob)
-    audioEl.play()
+    const clipUid = uuid()
+
+    const chunks = []
+    recorder.ondataavailable = function(evt) {
+        chunks.push(evt.data);
+    };
+    recorder.onstop = function(evt) {
+        var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+        clipBlobs[clipUid] = blob
+
+        const player = new Tone.Player(URL.createObjectURL(blob))
+        clipNodes[clipUid] = player
+        updateClipTimings()
+    }
+    recorder.start()
+    return {
+        stop (startBeat, endBeat) {
+            recorder.stop()
+            store.dispatch('createClip', {
+                id: clipUid,
+                beat: startBeat,
+                duration: 60 * (endBeat - startBeat) / store.state.tempo
+            })
+        }
+    }
 }
 
+
+function updateClipTimings () {
+    store.state.clips.forEach(clip => {
+        const node = clipNodes[clip.id]
+        if (node) {
+            console.log('clip.beat', clip.beat)
+            node.toMaster().sync().start(new Tone.Time(clip.beat, 'q'))
+        }
+    })
+}
+
+let activeRecording = null
 store.watch((_, g) => g.isRecording, recording => {
     if (recording) {
-        recorder.start()
+        if (!activeRecording) {
+            activeRecording = startRecording()
+        }
     } else {
-        recorder.stop()
+        if (activeRecording) {
+            activeRecording.stop(store.state.recordingStartBeat, store.state.currentTime)
+            activeRecording = null
+        }
     }
 })
 
@@ -90,19 +139,15 @@ store.watch((_, g) => g.isPlaying, (playing) => {
         Tone.Transport.schedule(playTick, unitTime)
         // playtickFrame = requestAnimationFrame(playTick)
     } else {
+        for (const id in clipNodes) {
+            clipNodes[id]._stop()
+        }
         Tone.Transport.stop()
 
         Tone.Transport.ticks = store.getters.cursorTickTime
         commitBeat()
         cancelAnimationFrame(playtickFrame)
         playtickFrame = null
-    }
-})
-
-store.watch((_, g) => g.cursorTickTime, tick => {
-    if (!store.getters.isPlaying) {
-        Tone.Transport.ticks = tick
-        commitBeat()
     }
 })
 

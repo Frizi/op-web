@@ -11,6 +11,7 @@
             <Tapes
                 :region="region"
                 :totalBeats="showBeats"
+                :active="activeTapeId"
                 :tapes="tapes"
                 @updateRegion="updateRegion"
             />
@@ -40,7 +41,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['tapes', 'uiMeasures', 'secondsToBeats']),
+        ...mapGetters(['tapes', 'activeTapeId', 'uiMeasures', 'secondsToBeats']),
         region () {
             const {
                 pixelsPerBeat,
