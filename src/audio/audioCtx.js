@@ -82,7 +82,6 @@ function updateClipTimings () {
     store.state.clips.forEach(clip => {
         const node = clipNodes[clip.id]
         if (node) {
-            console.log('clip.beat', clip.beat)
             node.toMaster().sync().start(new Tone.Time(clip.beat, 'q'))
         }
     })
