@@ -23,20 +23,31 @@ const clipNodes = {
 
 Tone.context.updateInterval = 1/120
 
-// var masterCompressor = new Tone.Compressor();
-// Tone.Master.chain(masterCompressor);
+var masterCompressor = new Tone.Compressor();
+Tone.Master.chain(masterCompressor);
+
+var synthGain = new Tone.Gain().toMaster()
+
+var stereo = new Tone.StereoWidener(0.3).connect(synthGain);
+var reverb = new Tone.Freeverb(0.4).connect(stereo);
+var chorus = new Tone.Chorus(4, 1.1, 0.5).connect(reverb);
+var pingPong = new Tone.PingPongDelay(0.01, 0.2).connect(chorus);
+var synthPrefx = new Tone.Gain(0.25).connect(pingPong)
+
+reverb.wet.value = 0.3;
 
 // const timeline = new Tone.Timeline()
 
 // var synth = new Tone.PolySynth(4, Tone.Sampler, signalUrl).toMaster();
-var synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+var synth = new Tone.PolySynth(4, Tone.Synth)
+    .chain(new Tone.Delay(1, 0.5))
+    .connect(synthPrefx);
 synth.set({
     // loop: true,
     "oscillator" : {
-        "type" : "pwm",
+        "type" : "sine",
         "modulationFrequency" : 0.2
     },
-    "volume": -12,
     "envelope" : {
         "attack" : 0.01,
         "decay" : 0,
@@ -68,7 +79,7 @@ const startRecording = () => {
     // force pull through script processor
     recorderNode.onaudioprocess = audioProcess
     recorderNode.connect(pullingAnalyser)
-    synth.connect(recorderNode)
+    synthGain.connect(recorderNode)
 
     const clipUid = uuid()
     let finished = false
@@ -92,7 +103,7 @@ const startRecording = () => {
 
     function finish () {
         recorderNode.disconnect(pullingAnalyser)
-        synth.disconnect(recorderNode)
+        synthGain.disconnect(recorderNode)
         recordWorker.postMessage({type: 'end', id: clipUid})
 
         recordWorker.onmessage = e => {
