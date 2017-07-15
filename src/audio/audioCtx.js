@@ -38,10 +38,10 @@ synth.set({
     },
     "volume": -12,
     "envelope" : {
-        "attack" : 0.005,
+        "attack" : 0.01,
         "decay" : 0,
         "sustain" : 1,
-        "release" : 0.005,
+        "release" : 0.5,
     }
 })
 
@@ -51,7 +51,7 @@ synth.set({
 
 const audioCtx = Tone.context._context
 window.ctx = audioCtx
-const recorderNode = Tone.context.createScriptProcessor(256, 2, 2);
+const recorderNode = Tone.context.createScriptProcessor(512, 2, 2);
 const pullingAnalyser = Tone.context.createAnalyser()
 pullingAnalyser.fftSize = 32 // minimal possible
 
@@ -227,10 +227,9 @@ store.watch((_, g) => g.isPlaying, (playing) => {
     if (playing) {
         const startTime = store.state.ui.cursorPosition
         store.commit('SET_TIME', startTime)
-
-        const unitTime = store.getters.cursorUnitTime
-        Tone.Transport.start("+0", unitTime)
-        Tone.Transport.schedule(playTick, unitTime)
+        const startTimeObj = new Tone.Time(startTime, 'q')
+        Tone.Transport.start("+0", startTimeObj)
+        Tone.Transport.schedule(playTick, startTimeObj)
         // playtickFrame = requestAnimationFrame(playTick)
     } else {
         for (const id in clipNodes) {
@@ -255,7 +254,7 @@ function playTick() {
 }
 
 const commitBeat = () => {
-    const currentBeat = Tone.Transport.ticks / Tone.Transport.PPQ
+    const currentBeat = (Tone.Transport.seconds - Tone.context.lookAhead) * Tone.Transport.bpm.value / 60
     if (store.state.currentTime !== currentBeat) {
         store.commit('SET_TIME', currentBeat)
     }

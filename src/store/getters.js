@@ -96,9 +96,6 @@ export const cursorPosition = state => state.ui.cursorPosition
 export const currentTime = state => state.currentTime
 
 import Tone from 'tone'
-export const cursorUnitTime = state => {
-    return 60 * (state.ui.cursorPosition) / state.tempo// - Tone.context.lookAhead
-}
 
 export const cursorTickTime = state => {
     return Math.round(state.ui.cursorPosition * Tone.Transport.PPQ)
