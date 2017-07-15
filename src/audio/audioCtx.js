@@ -3,7 +3,8 @@ import Tone from 'tone'
 import {noteFrequency} from '../notes'
 import R from 'ramda'
 import uuid from 'uuid/v4'
-console.log(Tone.TimeBase.prototype)
+
+import signalUrl from 'url-loader!../assets/StartSignal.wav'
 
 Tone.TimeBase.prototype._primaryExpressions.q = {
     regexp : /^(\d+)q/i,
@@ -22,57 +23,151 @@ const clipNodes = {
 
 Tone.context.updateInterval = 1/120
 
-var masterCompressor = new Tone.Compressor();
-Tone.Master.chain(masterCompressor);
+// var masterCompressor = new Tone.Compressor();
+// Tone.Master.chain(masterCompressor);
 
 // const timeline = new Tone.Timeline()
 
+// var synth = new Tone.PolySynth(4, Tone.Sampler, signalUrl).toMaster();
 var synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
 synth.set({
+    // loop: true,
     "oscillator" : {
         "type" : "pwm",
         "modulationFrequency" : 0.2
     },
+    "volume": -12,
     "envelope" : {
-        "attack" : 0.02,
-        "decay" : 0.1,
-        "sustain" : 0.2,
-        "release" : 0.9,
+        "attack" : 0.005,
+        "decay" : 0,
+        "sustain" : 1,
+        "release" : 0.005,
     }
 })
 
-const recorderNode = Tone.context.createMediaStreamDestination()
-const recorder = new MediaRecorder(recorderNode.stream)
-Tone.Master.connect(recorderNode)
+// const recorderNode = Tone.context.createMediaStreamDestination()
+// const recorder = new MediaRecorder(recorderNode.stream, { videoBitsPerSecond: 0 })
+// Tone.Master.connect(recorderNode)
 
+const audioCtx = Tone.context._context
+window.ctx = audioCtx
+const recorderNode = Tone.context.createScriptProcessor(256, 2, 2);
+const pullingAnalyser = Tone.context.createAnalyser()
+pullingAnalyser.fftSize = 32 // minimal possible
+
+const blobToBuffer = blob => new Promise(res => {
+    var fileReader = new FileReader();
+    fileReader.onload = function() { res(this.result) };
+    fileReader.readAsArrayBuffer(blob);
+})
+
+
+import workerScript from 'url-loader!./recordWorker'
+const recordWorker = new Worker(workerScript)
 const startRecording = () => {
-    const recorderNode = Tone.context.createMediaStreamDestination()
-    const recorder = new MediaRecorder(recorderNode.stream)
-    Tone.Master.connect(recorderNode)
+    // force pull through script processor
+    recorderNode.onaudioprocess = audioProcess
+    recorderNode.connect(pullingAnalyser)
+    synth.connect(recorderNode)
 
     const clipUid = uuid()
-
-    const chunks = []
-    recorder.ondataavailable = function(evt) {
-        chunks.push(evt.data);
+    let finished = false
+    let startBeat = null
+    let endBeat = null
+    const chunksL = []
+    const chunksR = []
+    function audioProcess(buf) {
+        const left = event.inputBuffer.getChannelData(0).buffer
+        const right = event.inputBuffer.getChannelData(1).buffer
+        recordWorker.postMessage({
+            type: 'data',
+            left, right
+        })
+        if (finished) {
+            recorderNode.onaudioprocess = null
+            requestIdleCallback(finish)
+        }
     };
-    recorder.onstop = function(evt) {
-        var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
-        clipBlobs[clipUid] = blob
 
-        const player = new Tone.Player(URL.createObjectURL(blob))
-        clipNodes[clipUid] = player
-        updateClipTimings()
-    }
-    recorder.start()
-    return {
-        stop (startBeat, endBeat) {
-            recorder.stop()
+
+    function finish () {
+        recorderNode.disconnect(pullingAnalyser)
+        synth.disconnect(recorderNode)
+        recordWorker.postMessage({type: 'end', id: clipUid})
+
+        recordWorker.onmessage = e => {
+            recordWorker.onmessage = null
+            const data = e.data
+            const audioBuffer = audioCtx.createBuffer(2, data.left.byteLength/4, audioCtx.sampleRate)
+            audioBuffer.copyToChannel(new Float32Array(data.left), 0)
+            audioBuffer.copyToChannel(new Float32Array(data.right), 1)
+
+            const player = new Tone.Player(audioBuffer)
+            clipNodes[clipUid] = player
             store.dispatch('createClip', {
                 id: clipUid,
                 beat: startBeat,
                 duration: 60 * (endBeat - startBeat) / store.state.tempo
             })
+            updateClipTimings()
+        }
+
+        // if (chunksL.length > 0) {
+        //     const bufLen = chunksL[0].length
+        //     const buf = audioCtx.createBuffer(2, bufLen * chunksL.length, audioCtx.sampleRate)
+        //     for(let c = 0; c < 2; c++) {
+        //         const channel = buf.getChannelData(c);
+        //         const chunks = c === 0 ? chunksL : chunksR
+        //
+        //         let pos = 0
+        //         for (let i = 0; i < chunks.length; i++) {
+        //             channel.set(chunks[i], pos)
+        //             pos += bufLen
+        //         }
+        //         console.log(channel.findIndex(x => x !== 0))
+        //     }
+        //     chunksL.length = 0
+        //     chunksR.length = 0
+        // }
+
+        // var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+        // clipBlobs[clipUid] = blob
+        // console.log(blob)
+        // const player = new Tone.Player(URL.createObjectURL(blob), () => {
+        //     const id = player.buffer._buffer.getChannelData(0).findIndex(x => x !== 0)
+        //     console.log(id, player.buffer._buffer.getChannelData(0))
+        //     clipNodes[clipUid] = player
+        //     updateClipTimings()
+        // })
+        // clipNodes[clipUid] = player
+        //
+        // store.dispatch('createClip', {
+        //     id: clipUid,
+        //     beat: startBeat,
+        //     duration: 60 * (endBeat - startBeat) / store.state.tempo
+        // })
+
+    }
+
+
+
+    // recorder.onstop = function(evt) {
+    //     var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+    //     clipBlobs[clipUid] = blob
+    //
+    //     const player = new Tone.Player(URL.createObjectURL(blob), () => {
+    //         const id = player.buffer._buffer.getChannelData(0).findIndex(x => x !== 0)
+    //         console.log(id, player.buffer._buffer.getChannelData(0))
+    //         clipNodes[clipUid] = player
+    //         updateClipTimings()
+    //     })
+    // }
+    // recorder.start()
+    return {
+        stop (_startBeat, _endBeat) {
+            finished = true
+            startBeat = _startBeat
+            endBeat = _endBeat
         }
     }
 }
