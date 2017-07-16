@@ -91,6 +91,17 @@ export const allActiveNotes = state => {
 export const armRecording = state => state.armRecording
 export const isPlaying = state => state.playing
 export const isRecording = (state) => state.playing && state.armRecording
+export const metronomeState = (state, getters) => {
+    if (!state.metronome) {
+        return 'off'
+    } else if (!getters.isPlaying) {
+        return 'on'
+    } else {
+        return Math.floor(state.currentTime) % 2
+            ? 'right'
+            : 'left'
+    }
+}
 
 export const cursorPosition = state => state.ui.cursorPosition
 export const currentTime = state => state.currentTime

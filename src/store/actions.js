@@ -98,3 +98,7 @@ export const createClip = ({commit, state}, clip) => {
     commit('ADD_CLIP_TO_TAPE', {tapeId: state.activeTape, clipId: clip.id})
 
 }
+
+export const toggleMetronome = ({commit, state}) => {
+    commit('SET_METRONOME', !state.metronome)
+}

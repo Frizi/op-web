@@ -6,7 +6,8 @@ export default {
     methods: {
         ...mapActions([
             'setPlaying',
-            'setActiveTape'
+            'setActiveTape',
+            'toggleMetronome'
         ])
     },
     computed: {
@@ -17,6 +18,7 @@ export default {
     },
     keys: {
         Space () { this.setPlaying(!this.isPlaying) },
+        KeyM () { this.toggleMetronome() },
         Digit1 () { this.tapes[0] && this.setActiveTape(this.tapes[0].id) },
         Digit2 () { this.tapes[1] && this.setActiveTape(this.tapes[1].id) },
         Digit3 () { this.tapes[2] && this.setActiveTape(this.tapes[2].id) },

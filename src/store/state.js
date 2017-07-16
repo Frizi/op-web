@@ -5,6 +5,7 @@ export default {
         cursorPosition: 0,
         selectedTape: null
     },
+    metronome: false,
     tempo: 120,
     metre: [4, 4],
     armRecording: false,

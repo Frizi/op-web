@@ -14,6 +14,10 @@ Tone.TimeBase.prototype._primaryExpressions.q = {
 
 }
 
+const def = Tone.TimeBase.prototype._primaryExpressions.default
+delete Tone.TimeBase.prototype._primaryExpressions.default
+Tone.TimeBase.prototype._primaryExpressions.default = def
+
 const clipBlobs = {
 
 }
@@ -40,7 +44,6 @@ reverb.wet.value = 0.3;
 
 // var synth = new Tone.PolySynth(4, Tone.Sampler, signalUrl).toMaster();
 var synth = new Tone.PolySynth(4, Tone.Synth)
-    .chain(new Tone.Delay(1, 0.5))
     .connect(synthPrefx);
 synth.set({
     // loop: true,
@@ -55,6 +58,26 @@ synth.set({
         "release" : 0.5,
     }
 })
+
+const metronomeSynth = new Tone.Synth({
+    "oscillator" : {
+        "type" : "sine",
+    },
+    volume: -12,
+    "envelope" : {
+        "attack" : 0.001,
+        "decay" : 0,
+        "sustain" : 1,
+        "release" : 0.05,
+    }
+}).toMaster()
+
+const metronome = new Tone.Loop(function(time){
+    if (store.state.metronome) {
+        const majorBeat = 0 === Math.round((Tone.Transport.seconds * store.state.tempo) / 60) % Tone.Transport.timeSignature
+        metronomeSynth.triggerAttackRelease(majorBeat ? 800 : 600, 0.02, time)
+    }
+}, "1q").start(0);
 
 // const recorderNode = Tone.context.createMediaStreamDestination()
 // const recorder = new MediaRecorder(recorderNode.stream, { videoBitsPerSecond: 0 })

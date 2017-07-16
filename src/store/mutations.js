@@ -90,6 +90,10 @@ export const SET_CURSOR = (state, pos) => {
     state.ui.cursorPosition = pos
 }
 
+export const SET_METRONOME = (state, flag) => {
+    state.metronome = flag
+}
+
 export const SET_ACTIVE_TAPE = (state, id) => {
     state.activeTape = id
 }

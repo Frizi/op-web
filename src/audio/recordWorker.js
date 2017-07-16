@@ -12,7 +12,6 @@ onmessage = (e) => {
     }
 }
 
-
 function finish (id) {
     const chunkSize = buffers.length > 0 ? buffers[0].byteLength / 4 : 0
     const bufSize = chunkSize * buffers.length / 2
